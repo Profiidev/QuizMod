@@ -1,4 +1,4 @@
-fetch("https://api.quizacademy.io/business-nest/public/courses/pin/CGGKVX", {
+fetch("https://api.quizacademy.io/business-nest/public/live_events/pin/LOSGFT", {
   method: "GET",
   headers: {
     "Content-Type": "application/json",
@@ -6,7 +6,7 @@ fetch("https://api.quizacademy.io/business-nest/public/courses/pin/CGGKVX", {
 })
   .then((res) => res.json())
   .then((res) => {
-    res.quizzes[0].questions.forEach(q => {
+    res.questions.forEach((q) => {
       let right = [];
       if (q.answers.length > 0) {
         q.answers.forEach((a) => {
@@ -20,4 +20,6 @@ fetch("https://api.quizacademy.io/business-nest/public/courses/pin/CGGKVX", {
       console.log(q.position, q.text, right);
     });
   })
-  .catch((err) => {});
+  .catch((err) => {
+    console.log(err);
+  });
