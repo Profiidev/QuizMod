@@ -7,6 +7,8 @@
   let eventID: number;
   let timeMax: number = 5000;
   let timeMin: number = 1000;
+  let type = 'business';
+  $: url = `https://api.quizacademy.io/${type}-nest/public/live_events`;
 
   uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     let r = (Math.random() * 16) | 0,
@@ -15,7 +17,7 @@
   });
 
   const click = () => {
-    fetch(`https://api.quizacademy.io/business-nest/public/live_events/pin/${code}`, {
+    fetch(url + `/pin/${code}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +81,7 @@
         let q_id = message.active_question_id;
         let time = Math.floor(Math.random() * (timeMax - timeMin + 1) + timeMin);
 
-        fetch(`https://api.quizacademy.io/business-nest/public/live_events/${eventID}/results`, {
+        fetch(url + `/${eventID}/results`, {
           headers: {
             accept: "*/*",
             "accept-language": "de,de-DE;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
@@ -93,7 +95,7 @@
           method: "OPTIONS",
         });
 
-        fetch(`https://api.quizacademy.io/business-nest/public/live_events/${eventID}/results`, {
+        fetch(url + `/${eventID}/results`, {
           headers: {
             accept: "*/*",
             "accept-language": "de,de-DE;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
@@ -120,13 +122,147 @@
   };
 </script>
 
-<div class="container">
-  <input type="text" placeholder="Code" bind:value={code}>
-  <input type="text" placeholder="Name" bind:value={name}>
-  <input type="number" placeholder="min Time" bind:value={timeMin}>
-  <input type="number" placeholder="max Time" bind:value={timeMax}>
-  <button on:click={click}>Start</button>
+<div class="page">
+  <h1 class="header">QuizMod</h1>
+  <div class="container">
+    <div class="input-field">
+      <input id="name" type="text" placeholder=" " bind:value={name}>
+      <label for="name" class="label">Name</label>
+    </div>
+    <div class="input-field">
+      <input id="code" type="text" placeholder=" " bind:value={code}>
+      <label for="code" class="label">Code</label>
+    </div>
+    <div class="input-field">
+      <input id="timeMin" type="number" placeholder=" " bind:value={timeMin}>
+      <label for="timeMin" class="label">Minimum Time</label>
+    </div>
+    <div class="input-field">
+      <input id="timeMax" type="number" placeholder=" " bind:value={timeMax}>
+      <label for="timeMax" class="label">Maximum Time</label>
+    </div>
+    <div class="input-field">
+      <select bind:value={type}>
+        <option value="university">University</option>
+        <option value="business">Business</option>
+      </select>
+    </div>
+    <div class="input-field">
+      <button on:click={click}>Start</button>
+    </div>
+  </div>
 </div>
 
 <style>
+  :global(:root){
+    font-size: 125%;
+    font-family: JetBrains Mono, monospace;
+  }
+  .page {
+    background-color: #121212;
+    color: #fff;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .header {
+    font-size: 2em;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 300px;
+  }
+
+  .input-field {
+    margin: 0;
+  }
+
+  input{
+    margin: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #121212;
+    color: #fff;
+    width: 200px;
+  }
+
+  button{
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #121212;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .input-field {
+    position: relative;
+  }
+
+  .input-field input {
+    padding: 10px;
+    background: none;
+    color: #fff;
+    border: 1px solid #ccc;
+  }
+
+  .input-field label {
+    position: absolute;
+    top: 50%;
+    left: 22px;
+    color: #ccc;
+    transition: 0.3s all;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+
+  .input-field input:focus + label,
+  .input-field input:not(:placeholder-shown) + label {
+    transform: translateY(-135%);
+    font-size: 0.8em;
+    color: #fff;
+    background-color: #121212;
+    padding: 2px;
+  }
+
+  .input-field input[type="number"]:focus + label,
+  .input-field input[type="number"]:not(:placeholder-shown) + label {
+    transform: translateY(-135%);
+    font-size: 0.75em;
+    color: #fff;
+    background-color: #121212;
+    padding: 2px;
+  }
+
+  .input-field select {
+    background-color: #121212;
+    color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 15px;
+    padding: 10px;
+    width: 222px;
+    font-size: .75em;
+    box-sizing: border-box;
+    height: 40px;
+  }
+
+  .input-field select:focus {
+    outline: none;
+  }
 </style>
