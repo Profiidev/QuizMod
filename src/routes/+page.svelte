@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
+
   let code: string;
   let name: string;
   let answers: any = {};
@@ -8,9 +10,10 @@
   let timeMax: number = 5000;
   let timeMin: number = 1000;
   let type = 'business';
+  let showPopup = false;
   $: url = `https://api.quizacademy.io/${type}-nest/public/live_events`;
 
-  uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+  uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     let r = (Math.random() * 16) | 0,
       v = c == "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
@@ -113,6 +116,8 @@
           body: `{"answers":[${answers[q_id].right}],"created_by":"${uuid}","event_id":${eventID},"question_id":${q_id},"result":1,"time":${time}}`,
           method: "POST",
         });
+        showPopup = true;
+        setTimeout(() => showPopup = false, 2000);
       }, 5000);
     } else if(message.status == "QUESTION_END") {
       console.log("End");
@@ -152,6 +157,11 @@
     </div>
   </div>
 </div>
+{#if showPopup}
+  <div class="popup" in:fly={{y: -200}} out:fly={{y: -200}}>
+    <h2>The Question has been answered</h2>
+  </div>
+{/if}
 
 <style>
   :global(:root){
@@ -264,5 +274,19 @@
 
   .input-field select:focus {
     outline: none;
+  }
+
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #ccc;
   }
 </style>
