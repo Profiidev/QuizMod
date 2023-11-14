@@ -52,7 +52,7 @@
   };
 
   const register = (live_event_id: number, name: string) => {
-    socket = new WebSocket("wss://udigu9uivk.execute-api.eu-central-1.amazonaws.com/business");
+    socket = new WebSocket(`wss://udigu9uivk.execute-api.eu-central-1.amazonaws.com/${type}-nest`);
     socket.onopen = function (e) {
       console.log("[open] Connection established");
       console.log("Sending to server");
