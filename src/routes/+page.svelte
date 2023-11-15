@@ -323,6 +323,11 @@
     background: #ccc;
   }
 
+  progress::-moz-progress-bar {
+    border-radius: 10px;
+    background: var(--color);
+  }
+
   .q-text {
     font-size: 0.75em;
     margin: 0;
