@@ -11,6 +11,11 @@
   let timeMin: number = 1000;
   let type = 'business';
   let showPopup = false;
+  let state = "loggedOut"
+  let questionsDone = 0;
+  let questionCount = 0;
+  $: progress = state !== "started" ? 1 : questionsDone / questionCount;
+  $: console.log(questionsDone / questionCount);
   $: url = `https://api.quizacademy.io/${type}-nest/public/live_events`;
 
   uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -39,6 +44,7 @@
         } else {
           right.push(q.is_right);
         }
+        questionCount++;
         answers[q.id] = {
           right: right.join(",")
         };
@@ -78,8 +84,14 @@
   };
 
   const react = (message: any) => {
+    if(message.message && message.message === "Forbidden" && state === "loggedOut") {
+      state = "notStarted";
+    }
     if(!message.status) return;
     if(message.status == "QUESTION") {
+      if(state === "notStarted") {
+        state = "started";
+      }
       setTimeout(() => {
         let q_id = message.active_question_id;
         let time = Math.floor(Math.random() * (timeMax - timeMin + 1) + timeMin);
@@ -117,6 +129,7 @@
           method: "POST",
         });
         showPopup = true;
+        questionsDone++;
         setTimeout(() => showPopup = false, 2000);
       }, 5000);
     } else if(message.status == "QUESTION_END") {
@@ -154,6 +167,10 @@
     </div>
     <div class="input-field">
       <button on:click={click}>Start</button>
+    </div>
+    <div class="input-field">
+      <p class="q-text">{questionsDone} / {questionCount}</p>
+      <progress value={progress} max="1" style="--color: {state === "loggedOut" ? "red" : state === "notStarted" ? "yellow" : "green"}"></progress>
     </div>
   </div>
 </div>
@@ -288,5 +305,28 @@
     align-items: center;
     flex-direction: column;
     color: #ccc;
+  }
+    
+  progress {
+    width: 200%;
+    height: 12px;
+    border-radius: 10px;
+  }
+
+  progress::-webkit-progress-value {
+    border-radius: 10px;
+    background: var(--color);
+  }
+
+  progress::-webkit-progress-bar {
+    border-radius: 10px;
+    background: #ccc;
+  }
+
+  .q-text {
+    font-size: 0.75em;
+    margin: 0;
+    width: 200%;
+    text-align: center;
   }
 </style>
