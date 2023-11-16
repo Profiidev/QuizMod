@@ -16,6 +16,8 @@
   let questionCount = 0;
   let position = 0;
   let playerCount = 0;
+  let answersText: any = {};
+  let currentQuestion = 0;
   $: progress = state !== "started" ? 1 : questionsDone / questionCount;
   $: url = `https://api.quizacademy.io/${type}-nest/public/live_events`;
 
@@ -36,19 +38,23 @@
     .then((res) => {
       res.questions.forEach((q: any) => {
         let right = [];
+        let rightText = [];
         if (q.answers.length > 0) {
           q.answers.forEach((a: any) => {
             if (a.is_right) {
               right.push(`{"id": ${a.id}}`);
+              rightText.push(a.text);
             }
           });
         } else {
           right.push(q.is_right);
+          rightText.push(q.is_right);
         }
         questionCount++;
         answers[q.id] = {
           right: right.join(",")
         };
+        answersText[q.id] = rightText;
       });
       eventID = res.id;
       register(res.id, name);
@@ -95,6 +101,7 @@
       }
       setTimeout(() => {
         let q_id = message.active_question_id;
+        currentQuestion = q_id;
         let time = Math.floor(Math.random() * (timeMax - timeMin + 1) + timeMin);
 
         fetch(url + `/${eventID}/results`, {
@@ -182,6 +189,13 @@
       <p class="q-text">{questionsDone} / {questionCount}</p>
       <progress value={progress} max="1" style="--color: {state === "loggedOut" ? "red" : state === "notStarted" ? "yellow" : "green"}"></progress>
       <p class="q-text" style="margin-top: 10px;">Du bist Position {position} / {playerCount}</p>
+      <p> </p>
+      {#if answersText[currentQuestion]}
+        <p class="q-text">Answers</p>
+        {#each answersText[currentQuestion] as answer}
+          <p class="q-text">{answer}</p>
+        {/each}
+      {/if}
     </div>
   </div>
 </div>
