@@ -14,8 +14,9 @@
   let state = "loggedOut"
   let questionsDone = 0;
   let questionCount = 0;
+  let position = 0;
+  let playerCount = 0;
   $: progress = state !== "started" ? 1 : questionsDone / questionCount;
-  $: console.log(questionsDone / questionCount);
   $: url = `https://api.quizacademy.io/${type}-nest/public/live_events`;
 
   uuid = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -135,7 +136,16 @@
     } else if(message.status == "QUESTION_END") {
       console.log("End");
     } else if(message.status == "QUESTION_RESULT") {
-      console.log("Result");
+      let scores: [] = message.high_score_list;
+      scores.sort((a: any, b: any) => {
+        return b.score - a.score === 0 ? a.time - b.time : b.score - a.score;
+      });
+      playerCount = scores.length;
+      scores.forEach((s: any, i) => {
+        if(s.user.uuid === uuid) {
+          position = i + 1;
+        }
+      })
     }
   };
 </script>
@@ -171,12 +181,13 @@
     <div class="input-field">
       <p class="q-text">{questionsDone} / {questionCount}</p>
       <progress value={progress} max="1" style="--color: {state === "loggedOut" ? "red" : state === "notStarted" ? "yellow" : "green"}"></progress>
+      <p class="q-text" style="margin-top: 10px;">Du bist Position {position} / {playerCount}</p>
     </div>
   </div>
 </div>
 {#if showPopup}
   <div class="popup" in:fly={{y: -200}} out:fly={{y: -200}}>
-    <h2>The Question has been answered</h2>
+    <h2>Die Frage wurde beantwortet</h2>
   </div>
 {/if}
 
