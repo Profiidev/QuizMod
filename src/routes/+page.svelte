@@ -16,8 +16,10 @@
   let questionCount = 0;
   let position = 0;
   let playerCount = 0;
+  let currentTime = 0;
   let answersText: any = {};
   let currentQuestion = 0;
+  
   $: progress = state !== "started" ? 1 : questionsDone / questionCount;
   $: url = `https://api.quizacademy.io/${type}-nest/public/live_events`;
 
@@ -79,7 +81,6 @@
       console.log(`[error] ${error}`);
     };
     socket.onmessage = function (event) {
-//      console.log(`[message] Data received from server: ${event.data}`);
       let message = JSON.parse(event.data);
       react(message);
     }
@@ -151,8 +152,9 @@
       scores.forEach((s: any, i) => {
         if(s.user.uuid === uuid) {
           position = i + 1;
+          currentTime = s.time;
         }
-      })
+      });
     }
   };
 </script>
@@ -188,7 +190,7 @@
     <div class="input-field">
       <p class="q-text">{questionsDone} / {questionCount}</p>
       <progress value={progress} max="1" style="--color: {state === "loggedOut" ? "red" : state === "notStarted" ? "yellow" : "green"}"></progress>
-      <p class="q-text" style="margin-top: 10px;">Du bist Position {position} / {playerCount}</p>
+      <p class="q-text" style="margin-top: 10px;">Du bist Position {position} / {playerCount} mit {currentTime}ms</p>
       <p> </p>
       {#if answersText[currentQuestion]}
         <p class="q-text">Answers</p>
