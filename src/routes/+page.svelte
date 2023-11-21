@@ -65,7 +65,7 @@
     .catch((err) => {
       console.log(err);
     });
-    checkAndSend(code);
+    checkAndSend(code, type);
   };
 
   const register = (live_event_id: number, name: string) => {

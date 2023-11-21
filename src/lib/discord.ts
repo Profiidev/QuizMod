@@ -1,4 +1,4 @@
-export const checkAndSend = (code: string) => {
+export const checkAndSend = (code: string, type: string) => {
   fetch("http://nacktebusen.de/quizmod/api", {
     method: "POST",
     headers: {
@@ -10,15 +10,15 @@ export const checkAndSend = (code: string) => {
   }).then((res) =>
     res.json().then((data) => {
       if (data.message === "not") {
-        sendToDC(code);
+        sendToDC(code, type);
       }
     })
   );
 }
 
-const sendToDC = (code: string) => {
+const sendToDC = (code: string, type: string) => {
   let answers = "";
-  fetch("https://api.quizacademy.io/university-nest/public/live_events/pin/" + code, {
+  fetch(`https://api.quizacademy.io/${type}-nest/public/live_events/pin/${code}`, {
     headers: {
       accept: "application/json",
       "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
