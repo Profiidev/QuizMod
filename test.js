@@ -1,4 +1,5 @@
-fetch("https://api.quizacademy.io/university-nest/public/live_events/pin/LGXYNI", {
+let answers = "";
+fetch("https://api.quizacademy.io/university-nest/public/live_events/pin/LBPULU", {
   headers: {
     accept: "application/json",
     "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -14,18 +15,29 @@ fetch("https://api.quizacademy.io/university-nest/public/live_events/pin/LGXYNI"
   },
   body: null,
   method: "GET",
-}).then((res) => res.json().then((data) => {
-  let x = {};
-  data.questions.forEach((q) => {
-    x[q.text] = q.answers.filter((a) => a.is_right).map((a) => a.text);
-  });
-  Object.keys(x).forEach((q, i) => {
-    console.log(i + 1, ": ",q);
-    console.log(" ");
-    x[q].forEach((a) => {
-      console.log(a);
+}).then((res) =>
+  res.json().then((data) => {
+    let x = {};
+    answers = `**${data.name}**\n\n`;
+    data.questions.forEach((q) => {
+      x[q.text] = q.answers.filter((a) => a.is_right).map((a) => a.text);
     });
-    console.log(" ");
-    console.log(" ");
-  });
-}));
+    Object.keys(x).forEach((q, i) => {
+      answers += `${i + 1}: ${q}\n${x[q].join("\n")}\n\n`;
+    });
+
+    if (answers === "") return;
+
+    fetch("https://discord.com/api/webhooks/1176431390334656624/h0rHp5wpPGJCJN6wydRCioVO2aqDzi3QKOrakU1TBZNSJdhC7zzG01GE1dOvnFIPHhpn", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: "QuizMod",
+        avatar_url: "",
+        content: answers,
+      }),
+    });
+  })
+);

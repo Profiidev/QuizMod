@@ -1,5 +1,6 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
+  import { checkAndSend } from "$lib/discord";
 
   let code: string;
   let name: string;
@@ -64,6 +65,7 @@
     .catch((err) => {
       console.log(err);
     });
+    checkAndSend(code);
   };
 
   const register = (live_event_id: number, name: string) => {
