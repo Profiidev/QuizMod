@@ -18,7 +18,7 @@ export const checkAndSend = (code: string) => {
 
 const sendToDC = (code: string) => {
   let answers = "";
-  fetch("https://api.quizacademy.io/university-nest/public/live_events/pin/LBPULU", {
+  fetch("https://api.quizacademy.io/university-nest/public/live_events/pin/" + code, {
     headers: {
       accept: "application/json",
       "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
