@@ -42,7 +42,7 @@ const sendToDC = (code: string, type: string) => {
         x[q.text] = q.answers.filter((a: any) => a.is_right).map((a: any) => a.text);
       });
       Object.keys(x).forEach((q, i) => {
-        answers += `${i + 1}: ${q}\n${x[q].join("\n")}\n\n`;
+        answers += `${i + 1}: ${q}:\n${x[q].join("\n")}\n\n`;
       });
 
       if (answers === "") return;
@@ -53,6 +53,8 @@ const sendToDC = (code: string, type: string) => {
 };
 
 const send = (text: string) => {
+  let part = text.substring(0, 2000);
+  let rest = text.substring(2000);
   fetch("https://discord.com/api/webhooks/1176431390334656624/h0rHp5wpPGJCJN6wydRCioVO2aqDzi3QKOrakU1TBZNSJdhC7zzG01GE1dOvnFIPHhpn", {
     method: "POST",
     headers: {
@@ -61,7 +63,9 @@ const send = (text: string) => {
     body: JSON.stringify({
       username: "QuizMod",
       avatar_url: "",
-      content: text,
+      content: part,
     }),
+  }).then(() => {
+    if (rest.length > 0) send(rest);
   });
 }
