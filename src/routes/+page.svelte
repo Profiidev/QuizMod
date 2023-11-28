@@ -192,7 +192,7 @@
     <div class="input-field">
       <p class="q-text">{questionsDone} / {questionCount}</p>
       <progress value={progress} max="1" style="--color: {state === "loggedOut" ? "red" : state === "notStarted" ? "yellow" : "green"}"></progress>
-      <p class="q-text" style="margin-top: 10px;">Du bist Position {position} / {playerCount} mit {currentTime}ms</p>
+      <p class="q-text" style="margin-top: 10px;">Du bist Position {position} / {playerCount} mit {Math.round(currentTime / 10) / 100}s</p>
       <p> </p>
       {#if answersText[currentQuestion]}
         <p class="q-text">Answers</p>
