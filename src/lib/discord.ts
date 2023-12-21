@@ -39,10 +39,10 @@ const sendToDC = (code: string, type: string) => {
       let x: any = {};
       answers = `**${data.name}**\n\n`;
       data.questions.forEach((q: any) => {
-        x[q.text] = q.answers.filter((a: any) => a.is_right).map((a: any) => a.text);
+        x[`${q.position}: ${q.text}`] = q.answers.filter((a: any) => a.is_right).map((a: any) => a.text);
       });
       Object.keys(x).forEach((q, i) => {
-        answers += `${i + 1}: ${q}:\n${x[q].join("\n")}\n\n`;
+        answers += `${q}:\n${x[q].join("\n")}\n\n`;
       });
 
       if (answers === "") return;
